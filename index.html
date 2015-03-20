@@ -1,0 +1,367 @@
+  <!DOCTYPE html>
+<html>
+
+<!-- ................................................................. -->
+<!-- ............................En tête.............................. -->
+<!-- ................................................................. -->
+
+  <head> 
+    <meta charset="utf-8">  <!--déclaration de la nature de l'encodage (pour les accents)-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <!-- Pour empêcher le zoom par le pinch -->
+    <title>My Page</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="sources/jquery-1.8.2.min.js"></script>
+    <script src="sources/jquery.mobile-1.4.5.min.js"></script>
+    <script src="sources/progressBar.min.js"></script>
+    <script src="sources/quo.min.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/cordova.js"></script>
+  </head>
+
+  <style type="text/css">
+
+    #container {
+      margin: auto;
+      margin-top: 0px;
+      height: 10px;
+    }
+
+    #container > svg {
+      width: 100%;
+      display: block;
+      height: 10px;
+    }
+
+
+  /* Left transition */
+  li.left {
+      -webkit-transition: -webkit-transform 250ms ease;
+      -webkit-transform: translateX(-100%);
+      -moz-transition: -moz-transform 250ms ease;
+      -moz-transform: translateX(-100%);
+      -o-transition: -o-transform 250ms ease;
+      -o-transform: translateX(-100%);
+      transition: transform 250ms ease;
+      transform: translateX(-100%);
+  }
+  /* Right transition */
+  li.right {
+      -webkit-transition: -webkit-transform 250ms ease;
+      -webkit-transform: translateX(100%);
+      -moz-transition: -moz-transform 250ms ease;
+      -moz-transform: translateX(100%);
+      -o-transition: -o-transform 250ms ease;
+      -o-transform: translateX(100%);
+      transition: transform 250ms ease;
+      transform: translateX(100%);
+  }
+  /* Border bottom for the previous button during the transition*/
+  li.left a.ui-btn,
+  li.right a.ui-btn {
+      border-top-width: 0;
+      border-left-width: 1px;
+      border-right-width: 1px;
+  }
+  li a.ui-btn.border-bottom {
+      border-bottom-width: 1px;
+  }
+  /* Hide the delete button on touch devices */
+  ul.touch li.ui-li-has-alt a.delete {
+      display: none;
+  }
+  ul.touch li.ui-li-has-alt a.ui-btn {
+      margin-right:0;
+  }
+  /* Styling for the popup */
+  #confirm p {
+      text-align: center;
+      font-size: inherit;
+      margin-bottom: .75em;
+  }
+  </style>
+
+
+<!-- ................................................................. -->
+<!-- .......................Ecran Bluetooth........................... -->
+<!-- ................................................................. -->
+  <body>
+    <div data-role="page" id="EcranConnexion" data-position="fixed">
+
+<!-- ............................Header............................... -->
+
+      <div data-role="header" data-position="fixed">
+        <h1>Tact</h1>
+      </div>
+
+<!-- ............................Content............................... -->
+      <div data-role="content">
+        <div id="connexion">
+          <ul data-role="listview" id="deviceList"></ul>
+          <button style="margin-top: 75vh" id="refreshButton">Refresh</button>
+        </div>
+        <div id="connecte">
+          <button style="margin-top :75vh"id="closeButton">Disconnect</button>
+        </div>
+      </div>
+      
+<!-- ............................Footer............................... -->
+          
+      <div data-role="footer" data-id="footer1" data-position="fixed">   <!-- bas de page permettant de switcher entre mode simple et avancé -->
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#EcranConnexion" data-transition="none" class="ui-btn-active ui-state-persist">Connexion</a></li> <!-- boutton mode simple sans lien -->
+            <li><a href="#EcranSimple" data-transition="none">Mode Simple</a></li> <!-- boutton mode simple sans lien -->
+            <li><a href="#EcranAvance" data-transition="none">Mode Avancé</a></li> <!-- boutton mode avancé sans lien-->
+          </ul>
+        </div>
+      </div>    
+    </div>
+
+
+<!-- ................................................................. -->
+<!-- .........................Ecran Simple............................ -->
+<!-- ................................................................. -->
+    <div data-role="page" id="EcranSimple" data-position="fixed">
+
+<!-- ............................Header............................... -->
+
+      <div data-role="header" data-position="fixed">
+        <h1>Tact</h1>
+      </div>
+
+<!-- ............................Content............................... -->
+
+      <div data-role="content">       
+        <div data-role="fieldcontain">                     <!-- checboxes permettant de choisir les notifs qu'on veut avoir -->
+          <fieldset data-role="controlgroup">
+            <legend>Notifications disponibles</legend>
+            <input type="checkbox" name="checkbox-1" id="checkbox-1" class="custom" />
+            <label for="checkbox-1">Textos</label>
+            <input type="checkbox" name="checkbox-2" id="checkbox-2" class="custom" />
+            <label for="checkbox-2">Appels</label>
+            <input type="checkbox" name="checkbox-3" id="checkbox-3" class="custom" />
+            <label for="checkbox-3">Emails</label>
+            <input type="checkbox" name="checkbox-4" id="checkbox-4" class="custom" />
+            <label for="checkbox-4">Notifications Facebook</label>
+            <input type="checkbox" name="checkbox-5" id="checkbox-5" class="custom" />
+            <label for="checkbox-5">Notifications Twitter</label>
+          </fieldset>
+        </div>
+      </div>
+
+<!-- ............................Footer............................... -->
+
+      <div data-role="footer" data-id="footer1" data-position="fixed">   <!-- bas de page permettant de switcher entre mode simple et avancé -->
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#EcranConnexion" data-transition="none">Connexion</a></li> <!-- boutton mode simple sans lien -->
+            <li><a href="#EcranSimple" data-transition="none" class="ui-btn-active ui-state-persist">Mode Simple</a></li> <!-- boutton mode simple sans lien -->
+            <li><a href="#EcranAvance" data-transition="none">Mode Avancé</a></li> <!-- boutton mode avancé sans lien-->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+
+<!-- ................................................................. -->
+<!-- .........................Ecran Avancé............................ -->
+<!-- ................................................................. -->
+
+    <div data-role="page" id="EcranAvance">
+
+<!-- ............................Header............................... -->
+
+      <div data-role="header" data-position="fixed">
+        <a data-icon="gear"  id="modifyNotif" href="#EcranAvanceModifier" data-transition="none">Modifier</a>
+        <h1>Tact</h1>
+        <a data-icon="plus" data-iconpos="notext" id="createNotif" href="#EcranAvanceCreer" data-transition="slideup"></a>
+      </div>
+
+<!-- ............................Content............................... -->
+
+      <div data-role="content">
+        <span id="EcranAvance">
+          <ul data-role="listview" id="listeNotif">
+            <li id="notifNum-0">
+              <div class="ui-field-contain">
+                <label id="activerNotifNom-0" for="activerNotif">J.Fedjaev</label>
+                <div class="activerNotif" align="right">
+                  <select name="slider-0" id="slider-0" data-role="slider" data-mini="true">
+                    <option value="0">Off</option>
+                    <option value="1">On</option>
+                  </select>
+                </div>
+              </div>
+            </li>
+         </ul>    
+        </span>
+      </div>
+                  
+<!-- ............................Footer............................... -->
+
+      <div data-role="footer" data-id="footer1" data-position="fixed">   <!-- bas de page permettant de switcher entre mode simple et avancé -->
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#EcranConnexion" data-transition="none">Connexion</a></li> <!-- boutton mode simple sans lien -->
+            <li><a href="#EcranSimple" data-transition="none">Mode Simple</a></li> <!-- boutton mode simple sans lien -->
+            <li><a href="#EcranAvance" data-transition="none" class="ui-btn-active ui-state-persist">Mode Avancé</a></li> <!-- boutton mode avancé sans lien-->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+<!-- ................................................................. -->
+<!-- .....................Ecran Avancé　Modification.................. -->
+<!-- ................................................................. -->
+
+    <div data-role="page" id="EcranAvanceModifier">
+
+<!-- ............................Header............................... -->
+
+      <div data-role="header" data-position="fixed">
+        <a data-icon="check" class="ui-btn-left" id="saveNotif" href="#EcranAvance" data-theme="b" data-transition="none" >Enregistrer</a>
+        <h1>Tact</h1>
+      </div>
+
+<!-- ............................Content............................... -->
+
+      <div data-role="content">
+        <span id="EcranAvanceModif">
+          <ul id="listeNotifModifier" class="touch" data-role="listview" data-icon="false" data-split-icon="delete">
+            <li id="notifModNum-0">
+              <a href="#EcranAvanceCreer"class="Notif1">
+              <h3 id="nomNotifModifier-0">J Fedjaev</h3></a>
+              <a href="#" class="delete">Delete</a>
+            </li> 
+          </ul>   
+        </span>
+      </div>
+                  
+<!-- ......................Pop-Up Confirmation........................ -->
+
+      <div id="confirm" class="ui-content" data-role="popup" data-theme="a">
+        <p id="question">Êtes-vous sûr de vouloir supprimer</p>
+        <div class="ui-grid-a">
+          <div class="ui-block-a">
+            <a id="yes" class="ui-btn ui-corner-all ui-mini ui-btn-a" data-rel="back">Oui</a>
+          </div>
+          <div class="ui-block-b">
+            <a id="cancel" class="ui-btn ui-corner-all ui-mini ui-btn-a" data-rel="back">Annuler</a>
+          </div>
+        </div>
+      </div>
+<!-- ................................/popup..... ......................-->
+<!-- ............................Footer............................... -->
+
+      <div data-role="footer" data-id="footer1" data-position="fixed">   <!-- bas de page permettant de switcher entre mode simple et avancé -->
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#EcranConnexion" data-transition="none">Connexion</a></li> <!-- boutton mode simple sans lien -->
+            <li><a href="#EcranSimple" data-transition="none">Mode Simple</a></li> <!-- boutton mode simple sans lien -->
+            <li><a href="#EcranAvance" data-transition="none" class="ui-btn-active ui-state-persist">Mode Avancé</a></li> <!-- boutton mode avancé sans lien-->
+          </ul>
+        </div>
+      </div>
+    </div>
+        
+
+
+<!-- ................................................................. -->
+<!-- .....................Ecran Avancé Création....................... -->
+<!-- ................................................................. -->
+
+    <div data-role="page" id="EcranAvanceCreer">
+
+<!-- ............................Header............................... -->
+
+      <div data-role="header" data-position="fixed">
+        <a data-icon="delete" class="ui-btn-left" data-theme="a" data-transition="pop" data-direction="reverse" href="#EcranAvance">Annuler</a>
+        <a data-icon="check" id="EnregistrerNotif" class="ui-btn-right" data-theme="b" href="#EcranAvance" data-transition="slideup" data-direction="reverse">Enregistrer</a>
+         <span class="ui-title"/>
+      </div>
+
+<!-- ............................Content............................... -->
+
+      <div data-role="content">
+        <form>
+          <ul data-role="listview" data-inset="false">
+            
+            <li class="ui-field-contain">
+              <label for="nomNotif">Nom :</label>
+              <input type="text" name="nomNotif" id="nomNotif" value="Notification Personnalisée">
+            </li>
+
+            <li class="ui-field-contain">
+              <label for="selectType">Type :</label>
+              <select name="selectType" id="selectType">
+                <option value="appels">Appels</option>
+                <option value="sms">Sms</option>
+                <option value="emails">eMails</option>
+                <option value="facebook">Facebook</option>
+                <option value="twitter">Twitter</option>
+              </select>
+            </li>
+
+            <li class="ui-field-contain">
+              <label for="selectMessageTactile">Message Tactile :</label>
+              <select name="selectMessageTactile" id="selectMessageTactile">
+                <option value="0">Non-Stop</option>
+                <option value="1">Alternance</option>
+              </select>
+            </li>
+            <li>
+              <a href="#EcranMessageTactile">
+                <h3>Nouveau Message Tactile</h3>
+              </a>
+            </li>
+          </ul>
+        </form> 
+      </div>
+<!-- ............................Footer............................... -->
+
+    </div>
+
+<!-- ................................................................. -->
+<!-- ....................Ecran message Tactile........................ -->
+<!-- ................................................................. -->
+    <div data-role="page" id="EcranMessageTactile" data-position="fixed">
+
+<!-- ............................Header............................... -->
+
+      <div data-role="header" data-position="fixed">
+        <a data-icon="delete" class="ui-btn-left" data-theme="a" data-transition="pop" data-direction="reverse" data-rel="back">Annuler</a>
+        <a data-icon="check" id="EnregistrerNotif" class="ui-btn-right" data-theme="b" data-transition="slideup" data-rel="popup" href="#popupMessageTactile" data-direction="reverse">Enregistrer</a>
+         <span class="ui-title"/>
+      </div>
+
+<!-- ............................Content............................... -->
+
+      <div style="height:90vh">
+        <div id="act1" style="height:50%; background-color:#DADADA"></div>
+        <div style="background-color:#F6F6F6" id="container"></div>
+        <div id="act2" style="height:48%; background-color:#DADADA"></div>
+
+      </div>         
+
+      <div id="popupMessageTactile" class="ui-content" data-role="popup" data-theme="a" data-dismissible="false" data-position-to="window">
+        <p>Nommez le nouveau Message Tactile</p>
+        <input type="text" id="messageTactileNom" value="">
+        <button id="annuler" data-rel="back" data-inline="true">Annuler</button>
+        <button id="saveMessageTactile" data-theme="b" data-inline="true">Ok</button>
+      </div>
+<!-- ............................Footer............................... -->
+      <div data-role="footer" id="start" data-position="fixed" style="height:5vh;background-color:#E5E5E5" align="center">Start</div>
+    </div>
+
+<!-- ................................................................. -->
+<!-- ........................Fin Fichier.............................. -->
+<!-- ................................................................. -->
+
+    <script type="text/javascript"> 
+      app.initialize(); //cette partie appelle directement l'initialisation dans le .js
+    </script>
+  </body>
+</html>

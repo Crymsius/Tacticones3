@@ -84,6 +84,7 @@
 <!-- ................................................................. -->
 <!-- .......................Ecran Bluetooth........................... -->
 <!-- ................................................................. -->
+
   <body>
     <div data-role="page" id="EcranConnexion" data-position="fixed">
 
@@ -94,6 +95,7 @@
       </div>
 
 <!-- ............................Content............................... -->
+
       <div data-role="content">
         <div id="connexion">
           <ul data-role="listview" id="deviceList"></ul>
@@ -116,7 +118,6 @@
         </div>
       </div>    
     </div>
-
 
 <!-- ................................................................. -->
 <!-- .........................Ecran Simple............................ -->
@@ -161,9 +162,6 @@
         </div>
       </div>
     </div>
-
-
-
 
 <!-- ................................................................. -->
 <!-- .........................Ecran Avancé............................ -->
@@ -233,7 +231,8 @@
           <ul id="listeNotifModifier" class="touch" data-role="listview" data-icon="false" data-split-icon="delete">
             <li id="notifModNum-0">
               <a href="#EcranAvanceCreer"class="Notif1">
-              <h3 id="nomNotifModifier-0">J Fedjaev</h3></a>
+                <h3 id="nomNotifModifier-0">J Fedjaev</h3>
+              </a>
               <a href="#" class="delete">Delete</a>
             </li> 
           </ul>   
@@ -253,6 +252,7 @@
           </div>
         </div>
       </div>
+
 <!-- ................................/popup..... ......................-->
 <!-- ............................Footer............................... -->
 
@@ -280,20 +280,18 @@
       <div data-role="header" data-position="fixed">
         <a data-icon="delete" class="ui-btn-left" data-theme="a" data-transition="pop" data-direction="reverse" href="#EcranAvance">Annuler</a>
         <a data-icon="check" id="EnregistrerNotif" class="ui-btn-right" data-theme="b" href="#EcranAvance" data-transition="slideup" data-direction="reverse">Enregistrer</a>
-         <span class="ui-title"/>
+        <span class="ui-title"/>
       </div>
 
 <!-- ............................Content............................... -->
 
       <div data-role="content">
         <form>
-          <ul data-role="listview" data-inset="false">
-            
+          <ul data-role="listview" data-inset="false"> 
             <li class="ui-field-contain">
               <label for="nomNotif">Nom :</label>
               <input type="text" name="nomNotif" id="nomNotif" value="Notification Personnalisée">
             </li>
-
             <li class="ui-field-contain">
               <label for="selectType">Type :</label>
               <select name="selectType" id="selectType">
@@ -304,7 +302,6 @@
                 <option value="twitter">Twitter</option>
               </select>
             </li>
-
             <li class="ui-field-contain">
               <label for="selectMessageTactile">Message Tactile :</label>
               <select name="selectMessageTactile" id="selectMessageTactile">
@@ -313,13 +310,12 @@
               </select>
             </li>
             <li>
-              <a href="#EcranMessageTactile">
-                <h3>Nouveau Message Tactile</h3>
-              </a>
+              <a href="#EcranMessageTactile"> <h3>Nouveau Message Tactile</h3> </a>
             </li>
           </ul>
         </form> 
       </div>
+
 <!-- ............................Footer............................... -->
 
     </div>
@@ -327,6 +323,7 @@
 <!-- ................................................................. -->
 <!-- ....................Ecran message Tactile........................ -->
 <!-- ................................................................. -->
+
     <div data-role="page" id="EcranMessageTactile" data-position="fixed">
 
 <!-- ............................Header............................... -->
@@ -334,7 +331,7 @@
       <div data-role="header" data-position="fixed">
         <a data-icon="delete" class="ui-btn-left" data-theme="a" data-transition="pop" data-direction="reverse" data-rel="back">Annuler</a>
         <a data-icon="check" id="EnregistrerNotif" class="ui-btn-right" data-theme="b" data-transition="slideup" data-rel="popup" href="#popupMessageTactile" data-direction="reverse">Enregistrer</a>
-         <span class="ui-title"/>
+        <span class="ui-title"/>
       </div>
 
 <!-- ............................Content............................... -->
@@ -343,8 +340,9 @@
         <div id="act1" style="height:50%; background-color:#DADADA"></div>
         <div style="background-color:#F6F6F6" id="container"></div>
         <div id="act2" style="height:48%; background-color:#DADADA"></div>
+      </div>        
 
-      </div>         
+<!-- ....................Pop-Up Message Tactile........................ -->      
 
       <div id="popupMessageTactile" class="ui-content" data-role="popup" data-theme="a" data-dismissible="false" data-position-to="window">
         <p>Nommez le nouveau Message Tactile</p>
@@ -352,7 +350,9 @@
         <button id="annuler" data-rel="back" data-inline="true">Annuler</button>
         <button id="saveMessageTactile" data-theme="b" data-inline="true">Ok</button>
       </div>
+
 <!-- ............................Footer............................... -->
+
       <div data-role="footer" id="start" data-position="fixed" style="height:5vh;background-color:#E5E5E5" align="center">Start</div>
     </div>
 

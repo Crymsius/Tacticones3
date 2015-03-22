@@ -15,11 +15,11 @@ Vaut 1 à la création.
 [0,1,2,...,n]
  	 |
  	 v
-   {nom, typeNotif, messageTactile, actif}
-	 |		|			  |		  	  |
-	 v 		v 			  v 		  v
-   string  string        int        0 ou 1
-					(l'indice du msge dans l'array listeMessageTactile)
+   {nom, typeNotif, numero, messageTactile, actif}
+	 |		|		  |  		|		  	  |
+	 v 		v 		  v	        v 		      v
+   string  string     array    int        0 ou 1
+					de numeros  (l'indice du msge dans l'array listeMessageTactile)
 
 
 - num : numéro de la notification récupérée pour modifier les valeurs de celle-ci.
@@ -34,6 +34,7 @@ var NouvelleNotif = [];
 function Notification () {
     this.nom = "";
     this.typeNotif = "";
+    this.numero = [];
     this.messageTactile = [];
     this.actif = 0;
 };
@@ -59,6 +60,7 @@ var app = {
 
 	bindEvents: function() {	//bind tous les events/clics/swipe/bouttons/etc.
 	    document.addEventListener('deviceready', this.onDeviceReady, false);
+	    document.addEventListener('pause', this.onPause, false);
 	    $("#refreshButton").bind('tap', this.refreshDeviceList);
 	    $("#closeButton").bind('tap', this.disconnect);
 	    $("#deviceList").bind('tap', this.connect);
@@ -92,6 +94,9 @@ var app = {
 	startApp: function() {	
 		
 	    //initialisation des messages tactiles par défauts.
+	    messageTactileAppels = [[1,1100,1900,3000],[1,1100,1900,3000]];
+	    messageTactileSms = [[1,300,400,700,800,1100],[1,300,400,700,800,1100]];
+
 	    msgeTact=[[1,3000],[1,3000]];
 		listeMessageTactile[0] = new MsTact;
 		listeMessageTactile[0].nom = 'Non-Stop';
@@ -108,8 +113,10 @@ var app = {
 		NouvelleNotif[0] = new Notification;
 	    NouvelleNotif[0].nom = 'J.Fedjaev';
 	    NouvelleNotif[0].typeNotif = 'sms';
+	    NouvelleNotif[0].numero = ['0612629541','0612976200'];
 	    NouvelleNotif[0].messageTactile = 0;
 	    NouvelleNotif[0].actif = 0;
+
 
 	},
 
@@ -383,6 +390,72 @@ var app = {
 				setTimeout(function(){if (typeof rfduino!=='undefined')rfduino.write(h+bit);console.log(h+bit); bit=bit^1;}, array[ind][j]);
 			};
 		};
+	},
+
+	onPause: function() {
+		PhoneCallTrap.onCall(function(state) {
+    	console.log("CHANGE STATE: " + state);
+
+	    switch (state) {
+	        case "RINGING":
+	            app.testNotification('appel','0')
+	            break;
+	        case "OFFHOOK":
+	            console.log("Phone is off-hook");
+	            break;
+	        case "IDLE":
+	            console.log("Phone is idle");
+	            break;
+		    }
+		});
+	},
+
+	testNotification: function(type, number) {
+		switch (type) {
+			case "appel":
+				var bit=0;
+				for (var i=0; i<NouvelleNotif.length; i++) {
+					if(NouvelleNotif[i].typeNotif==type && NouvelleNotif[i].actif==1 && bit!=1){
+						app.sendData(listeMessageTactile[NouvelleNotif[i].messageTactile].messageTactile);
+						bit=bit^1;
+					}
+				}
+				if($("#checkbox-2").is(":checked") && bit!=1) {
+					app.sendData(messageTactileAppels);
+					bit=bit^1;
+				}
+				if(bit!=1)
+					console.log("pas de notif d'appel");
+				bit=bit^1;
+				break;
+
+			case "sms":
+				var bit=0;
+				for (var i=0; i<NouvelleNotif.length; i++) {
+					if(NouvelleNotif[i].typeNotif==type && NouvelleNotif[i].actif==1 && bit!=1){
+						for (var j=0; j<NouvelleNotif[i].numero.length; j++){
+							if(NouvelleNotif[i].numero[j]==number && bit!=1){
+								app.sendData(listeMessageTactile[NouvelleNotif[i].messageTactile].messageTactile);
+								bit=bit^1;
+							}
+						}
+						
+					}
+				}
+				if($("#checkbox-1").is(":checked") && bit!=1) {
+					app.sendData(messageTactileSms);
+					bit=bit^1;
+				}
+				if(bit!=1)
+					console.log("pas de notif de sms");
+				bit=bit^1;
+				break;
+
+			case "email":
+				console.log("email");
+				break;
+		}
 	}
+
 };
 

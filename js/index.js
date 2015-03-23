@@ -50,7 +50,6 @@ function MsTact () {
 var app = {
 	initialize: function() {	//Fonction d'initialisation
 	    this.bindEvents();
-	    $("#connecte").hide();
 	    this.startApp();
 	    line = new ProgressBar.Line('#container', {
 	    	duration: dureeMsg,
@@ -69,10 +68,14 @@ var app = {
 	    $("#EnregistrerNotif").bind('tap', this.SaveNotif);
 	    $("#start").bind('tap', this.messageTactile);
 	    $("#saveMessageTactile").bind('tap', this.SaveMessageTactile);
-	    $("#annuler").bind('tap', function(){ $("#popupMessageTactile").popup("close")});
-	    
-	    
+	    $("#annuler").bind('tap', function() { $("#popupMessageTactile").popup("close")});
+	    $("#selectMessageTactile").change(function() {app.sendData(listeMessageTactile[this.value].messageTactile)});
+	    $("#selectType").change(function() {
+	    	this.value =='sms' ? $("#listeMod li :eq(2)").show(): $("#listeMod li :eq(2)").hide();
+		});
+
 	    this.bindSliders(0);
+		
 		$(document).off('click', "#listeNotifModifier li").on('click', "#listeNotifModifier li", function (event){
 			listitem = $(this);
 			app.listModify();
@@ -81,8 +84,6 @@ var app = {
 			listitem = $(this);
 			app.supprNotif(event);
 		});
-		//$("#caca").bind('tap',this.sendData(msgeTact1));
-
 	},
 
 	bindSliders: function(i) {	//bind le slider-i et envoie l'état dans la notification i (NouvelleNotif[i].actif)
@@ -91,8 +92,7 @@ var app = {
 		});
 	},
 
-	startApp: function() {	
-		
+	startApp: function() {
 	    //initialisation des messages tactiles par défauts.
 	    messageTactileAppels = [[1,1100,1900,3000],[1,1100,1900,3000]];
 	    messageTactileSms = [[1,300,400,700,800,1100],[1,300,400,700,800,1100]];
@@ -116,8 +116,6 @@ var app = {
 	    NouvelleNotif[0].numero = ['0612629541','0612976200'];
 	    NouvelleNotif[0].messageTactile = 0;
 	    NouvelleNotif[0].actif = 0;
-
-
 	},
 
 	onDeviceReady: function() {
@@ -156,6 +154,10 @@ var app = {
 	    rfduino.disconnect(app.showConnexion, app.onError);
 	},
 
+	onError: function(reason) {
+	    alert(reason);
+	},
+	
 	showConnexion: function() {
 	    $("#connexion").show();
 	    $("#connecte").hide();
@@ -183,6 +185,8 @@ var app = {
         var nom = NouvelleNotif[num].nom;// on met le nom dans une variable nom
         var type = NouvelleNotif[num].typeNotif;
         var message = NouvelleNotif[num].messageTactile;
+        if(type!='sms')
+        	$("#listeMod li :eq(2)").hide();
         $("#nomNotif").val(nom);
         $("#selectType").val(type).selectmenu("refresh");
         $("#selectMessageTactile").val(message).selectmenu("refresh");
@@ -190,7 +194,6 @@ var app = {
 
 	SaveNotif: function() {
 		
-
 		if (addNotif==1) { // 1 <=> on crée une nouvelle notif
 			var i = nbrNotif; //i : variable locale
 	        nbrNotif++; //on incrémente nbrNotif (variable globale)
@@ -300,10 +303,6 @@ var app = {
 	    }
 	},
 
-	onError: function(reason) {
-	    alert(reason);
-	},
-
 	messageTactile: function(){
 		app.progressBar();
 
@@ -350,8 +349,6 @@ var app = {
         msgeTact.push(msgeTact1);
         msgeTact.push(msgeTact2);
         console.log(msgeTact);
-      	//app.sendData(msgeTact);
-      	
     },
 
 	progressBar: function() {
@@ -412,48 +409,48 @@ var app = {
 
 	testNotification: function(type, number) {
 		switch (type) {
-			case "appel":
-				var bit=0;
-				for (var i=0; i<NouvelleNotif.length; i++) {
-					if(NouvelleNotif[i].typeNotif==type && NouvelleNotif[i].actif==1 && bit!=1){
-						app.sendData(listeMessageTactile[NouvelleNotif[i].messageTactile].messageTactile);
-						bit=bit^1;
-					}
-				}
-				if($("#checkbox-2").is(":checked") && bit!=1) {
-					app.sendData(messageTactileAppels);
+		case "appel":
+			var bit=0;
+			for (var i=0; i<NouvelleNotif.length; i++) {
+				if(NouvelleNotif[i].typeNotif==type && NouvelleNotif[i].actif==1 && bit!=1){
+					app.sendData(listeMessageTactile[NouvelleNotif[i].messageTactile].messageTactile);
 					bit=bit^1;
 				}
-				if(bit!=1)
-					console.log("pas de notif d'appel");
+			}
+			if($("#checkbox-2").is(":checked") && bit!=1) {
+				app.sendData(messageTactileAppels);
 				bit=bit^1;
-				break;
+			}
+			if(bit!=1)
+				console.log("pas de notif d'appel");
+			bit=bit^1;
+			break;
 
-			case "sms":
-				var bit=0;
-				for (var i=0; i<NouvelleNotif.length; i++) {
-					if(NouvelleNotif[i].typeNotif==type && NouvelleNotif[i].actif==1 && bit!=1){
-						for (var j=0; j<NouvelleNotif[i].numero.length; j++){
-							if(NouvelleNotif[i].numero[j]==number && bit!=1){
-								app.sendData(listeMessageTactile[NouvelleNotif[i].messageTactile].messageTactile);
-								bit=bit^1;
-							}
+		case "sms":
+			var bit=0;
+			for (var i=0; i<NouvelleNotif.length; i++) {
+				if(NouvelleNotif[i].typeNotif==type && NouvelleNotif[i].actif==1 && bit!=1){
+					for (var j=0; j<NouvelleNotif[i].numero.length; j++){
+						if(NouvelleNotif[i].numero[j]==number && bit!=1){
+							app.sendData(listeMessageTactile[NouvelleNotif[i].messageTactile].messageTactile);
+							bit=bit^1;
 						}
-						
 					}
+					
 				}
-				if($("#checkbox-1").is(":checked") && bit!=1) {
-					app.sendData(messageTactileSms);
-					bit=bit^1;
-				}
-				if(bit!=1)
-					console.log("pas de notif de sms");
+			}
+			if($("#checkbox-1").is(":checked") && bit!=1) {
+				app.sendData(messageTactileSms);
 				bit=bit^1;
-				break;
+			}
+			if(bit!=1)
+				console.log("pas de notif de sms");
+			bit=bit^1;
+			break;
 
-			case "email":
-				console.log("email");
-				break;
+		case "email":
+			console.log("email");
+			break;
 		}
 	}
 

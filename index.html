@@ -180,21 +180,19 @@
 <!-- ............................Content............................... -->
 
       <div data-role="content">
-        <span id="EcranAvance">
-          <ul data-role="listview" id="listeNotif">
-            <li id="notifNum-0">
-              <div class="ui-field-contain">
-                <label id="activerNotifNom-0" for="activerNotif">J.Fedjaev</label>
-                <div class="activerNotif" align="right">
-                  <select name="slider-0" id="slider-0" data-role="slider" data-mini="true">
-                    <option value="0">Off</option>
-                    <option value="1">On</option>
-                  </select>
-                </div>
+        <ul data-role="listview" id="listeNotif">
+          <li id="notifNum-0">
+            <div class="ui-field-contain">
+              <label id="activerNotifNom-0" for="activerNotif">J.Fedjaev</label>
+              <div class="activerNotif" align="right">
+                <select name="slider-0" id="slider-0" data-role="slider" data-mini="true">
+                  <option value="0">Off</option>
+                  <option value="1">On</option>
+                </select>
               </div>
-            </li>
-         </ul>    
-        </span>
+            </div>
+          </li>
+        </ul>
       </div>
                   
 <!-- ............................Footer............................... -->
@@ -227,16 +225,14 @@
 <!-- ............................Content............................... -->
 
       <div data-role="content">
-        <span id="EcranAvanceModif">
-          <ul id="listeNotifModifier" class="touch" data-role="listview" data-icon="false" data-split-icon="delete">
-            <li id="notifModNum-0">
-              <a href="#EcranAvanceCreer"class="Notif1">
-                <h3 id="nomNotifModifier-0">J Fedjaev</h3>
-              </a>
-              <a href="#" class="delete">Delete</a>
-            </li> 
-          </ul>   
-        </span>
+        <ul id="listeNotifModifier" class="touch" data-role="listview" data-icon="false" data-split-icon="delete">
+          <li id="notifModNum-0">
+            <a href="#EcranAvanceCreer"class="Notif1">
+              <h3 id="nomNotifModifier-0">J Fedjaev</h3>
+            </a>
+            <a href="#" class="delete">Delete</a>
+          </li> 
+        </ul>
       </div>
                   
 <!-- ......................Pop-Up Confirmation........................ -->
@@ -280,7 +276,7 @@
       <div data-role="header" data-position="fixed">
         <a data-icon="delete" class="ui-btn-left" data-theme="a" data-transition="pop" data-direction="reverse" href="#EcranAvance">Annuler</a>
         <a data-icon="check" id="EnregistrerNotif" class="ui-btn-right" data-theme="b" href="#EcranAvance" data-transition="slideup" data-direction="reverse">Enregistrer</a>
-        <span class="ui-title"/>
+        <h1></h1>
       </div>
 
 <!-- ............................Content............................... -->
@@ -315,7 +311,7 @@
               </select>
             </li>
             <li>
-              <a href="#EcranMessageTactile"> <h3>Nouveau Message Tactile</h3> </a>
+              <a id="toMessageTactile" href="#EcranMessageTactile"> <h3>Nouveau Message Tactile</h3> </a>
             </li>
           </ul>
         </form> 
@@ -334,20 +330,26 @@
 <!-- ............................Header............................... -->
 
       <div data-role="header" data-position="fixed">
-        <a data-icon="delete" class="ui-btn-left" data-theme="a" data-transition="pop" data-direction="reverse" data-rel="back">Annuler</a>
-        <a data-icon="check" id="EnregistrerNotif" class="ui-btn-right" data-theme="b" data-transition="slideup" data-rel="popup" href="#popupMessageTactile" data-direction="reverse">Enregistrer</a>
-        <span class="ui-title"/>
+        <a data-icon="delete" class="ui-btn-inline"  data-theme="a" data-transition="pop" data-direction="reverse" data-rel="back">Annuler</a>
+        <div class="ui-btn-right  ui-shadow" data-role="controlgroup" data-type="horizontal"> 
+          <a data-role="button" id="start" data-theme="a" href="#start" >Nouveau</a>
+          <a data-role="button" id="EnregistrerNotif" data-icon="check" data-theme="b" data-transition="slideup" data-rel="popup" href="#popupMessageTactile" data-direction="reverse">Enregistrer</a>
+        </div>
+        <h1></h1>
       </div>
 
 <!-- ............................Content............................... -->
 
-      <div style="height:90vh">
-        <div id="act1" style="height:50%; background-color:#DADADA"></div>
-        <div style="background-color:#F6F6F6" id="container"></div>
-        <div id="act2" style="height:48%; background-color:#DADADA"></div>
+      <div style="height:92vh">
+          <div id="act1" style="height:50%; background-color:#DADADA"></div>
+          <div style="background-color:#F6F6F6" id="container"></div>
+          <div id="act2" style="height:50%; background-color:#DADADA"></div>
       </div>        
 
-<!-- ....................Pop-Up Message Tactile........................ -->      
+<!-- ............................Pop-Up Start.......................... -->
+
+
+<!-- ....................Pop-Up Message Tactile........................ -->
 
       <div id="popupMessageTactile" class="ui-content" data-role="popup" data-theme="a" data-dismissible="false" data-position-to="window">
         <p>Nommez le nouveau Message Tactile</p>
@@ -358,7 +360,7 @@
 
 <!-- ............................Footer............................... -->
 
-      <div data-role="footer" id="start" data-position="fixed" style="height:5vh;background-color:#E5E5E5" align="center">Start</div>
+      
     </div>
 
 <!-- ................................................................. -->

@@ -47,6 +47,7 @@ function MsTact () {
 	this.messageTactile = [];
 };
 
+
 var app = {
 	initialize: function() {	//Fonction d'initialisation
 	    this.bindEvents();
@@ -55,6 +56,7 @@ var app = {
 	    	duration: dureeMsg,
 	    	color: '#FCB03C'
 	  	});
+	  	this.showConnexion();
 	},
 
 	bindEvents: function() {	//bind tous les events/clics/swipe/bouttons/etc.
@@ -113,7 +115,7 @@ var app = {
 		NouvelleNotif[0] = new Notification;
 	    NouvelleNotif[0].nom = 'J.Fedjaev';
 	    NouvelleNotif[0].typeNotif = 'sms';
-	    NouvelleNotif[0].numero = ['0612629541','0612976200'];
+	    NouvelleNotif[0].numero = ['+33612976200','0612976200'];
 	    NouvelleNotif[0].messageTactile = 0;
 	    NouvelleNotif[0].actif = 0;
 	},
@@ -170,6 +172,7 @@ var app = {
 
 	createNotif: function() {
 		addNotif = 1; //1 pour créer une nouvelle notif
+       	$("#listeMod li :eq(2)").hide();
 		$("#nomNotif").val("Notification Perso "+nbrNotif);
        	$("#selectType").val("appels").selectmenu("refresh");
         $("#selectMessageTactile").val("messageTactile1").selectmenu("refresh");
@@ -391,20 +394,25 @@ var app = {
 
 	onPause: function() {
 		PhoneCallTrap.onCall(function(state) {
-    	console.log("CHANGE STATE: " + state);
+	    	console.log("CHANGE STATE: " + state);
 
-	    switch (state) {
-	        case "RINGING":
-	            app.testNotification('appel','0')
-	            break;
-	        case "OFFHOOK":
-	            console.log("Phone is off-hook");
-	            break;
-	        case "IDLE":
-	            console.log("Phone is idle");
-	            break;
+		    switch (state) {
+		        case "RINGING":
+		            app.testNotification('appel','0');
+		            break;
+		        case "OFFHOOK":
+		            console.log("Phone is off-hook");
+		            break;
+		        case "IDLE":
+		            console.log("Phone is idle");
+		            break;
 		    }
 		});
+		if (! SMS ) { console.log( 'SMS plugin not ready' ); return; }  	
+        document.addEventListener('onSMSArrive', function(e){
+            var data = e.data;
+            app.testNotification('sms',data.address);
+        });
 	},
 
 	testNotification: function(type, number) {

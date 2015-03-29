@@ -122,6 +122,7 @@ var app = {
 
 	onDeviceReady: function() {
 	    app.refreshDeviceList();
+	    app.handleContactSms();
 	},
 
 	refreshDeviceList: function() {
@@ -176,6 +177,8 @@ var app = {
 		$("#nomNotif").val("Notification Perso "+nbrNotif);
        	$("#selectType").val("appels").selectmenu("refresh");
         $("#selectMessageTactile").val("messageTactile1").selectmenu("refresh");
+        $("#selectContact option:selected").prop("selected",false);
+       	$("#selectContact").selectmenu('refresh');
 	},
 
 	modifyNotif: function() {
@@ -188,11 +191,22 @@ var app = {
         var nom = NouvelleNotif[num].nom;// on met le nom dans une variable nom
         var type = NouvelleNotif[num].typeNotif;
         var message = NouvelleNotif[num].messageTactile;
-        if(type!='sms')
+        if(type!='sms') {
         	$("#listeMod li :eq(2)").hide();
+		    $("#selectContact option:selected").prop('selected',false);
+		    $("#selectContact").selectmenu('refresh');
+        } else {
+        	$("#selectContact option:selected").prop('selected',false);
+        	for(var i=0; i<NouvelleNotif[num].numero.length;i++) {
+        		$('#selectContact option[value~='+'"'+NouvelleNotif[num].numero[i]+'"'+']').prop('selected',true);
+        	}
+        	$("#selectContact").selectmenu('refresh');
+        	$("#listeMod li :eq(2)").show();
+        };
         $("#nomNotif").val(nom);
         $("#selectType").val(type).selectmenu("refresh");
         $("#selectMessageTactile").val(message).selectmenu("refresh");
+
 	},
 
 	SaveNotif: function() {
@@ -206,7 +220,12 @@ var app = {
 	        NouvelleNotif[i].nom = document.getElementById("nomNotif").value;
 	        NouvelleNotif[i].typeNotif = document.getElementById("selectType").value;
 	        NouvelleNotif[i].messageTactile =  parseInt(document.getElementById("selectMessageTactile").value);
-
+	        NouvelleNotif[i].numero =[];
+            $("#selectContact option:selected").each(function() {
+            	var tableau = this.value.split(" ");
+            	for(var j=0 ; j<tableau.length ; j++)
+            		NouvelleNotif[i].numero.push(tableau[j]);
+            });
 	    var newNotif = document.createElement('li'); //ajout de la notif créée en html en bout de liste (sur les 2 listes : modifier et avancé)
 	        newNotif.innerHTML =    '<div class="ui-field-contain">' +
 	                                    '<label id="activerNotifNom-'+ i +'" for "activerNotif-'+ i +'">' + NouvelleNotif[i].nom + '</label>' +
@@ -241,8 +260,12 @@ var app = {
             NouvelleNotif[num].nom = document.getElementById("nomNotif").value;
             NouvelleNotif[num].typeNotif = document.getElementById("selectType").value;
             NouvelleNotif[num].messageTactile = parseInt(document.getElementById("selectMessageTactile").value);
-            
-
+            NouvelleNotif[num].numero =[];
+            $("#selectContact option:selected").each(function() {
+            	var tableau = this.value.split(" ");
+            	for(var j=0 ; j<tableau.length ; j++)
+            		NouvelleNotif[num].numero.push(tableau[j]);
+            });
             $("#nomNotifModifier-"+num).html(NouvelleNotif[num].nom); //met à jour les listes avec les bons noms
             $("#activerNotifNom-"+num).html(NouvelleNotif[num].nom);
 			app.sendData(listeMessageTactile[NouvelleNotif[num].messageTactile].messageTactile);
@@ -303,6 +326,30 @@ var app = {
 	            listitem.removeClass( "ui-btn-active" );
 	            $( "#confirm #yes" ).off();
 	        });
+	    }
+	},
+
+	handleContactSms: function() {
+	    var options      = new ContactFindOptions();
+	    options.multiple = true;
+	    navigator.contactsPhoneNumbers.list(app.onContactsSuccess, console.log("contact Error"));
+
+	},
+
+	onContactsSuccess: function(contacts) {
+	    $("#selectContact").empty();
+	    for (var i = 0; i < contacts.length; i++) {
+	    	if(contacts[i].displayName != null){
+	    		var contactI = document.createElement('option');
+	    		contactI.innerHTML = contacts[i].displayName;
+	    		$("#selectContact").append(contactI);
+	    		$("#selectContact option:last-child").attr('value', function() {
+	    			var attribut = '';
+	    			for(var j=0; j< contacts[i].phoneNumbers.length ; j++)
+	    				attribut = contacts[i].phoneNumbers[j].normalizedNumber+' '+contacts[i].phoneNumbers[j] +' '+ attribut;
+					return attribut.trim();
+	    		});
+	    	}
 	    }
 	},
 
@@ -393,26 +440,14 @@ var app = {
 	},
 
 	onPause: function() {
-		PhoneCallTrap.onCall(function(state) {
-	    	console.log("CHANGE STATE: " + state);
-
-		    switch (state) {
-		        case "RINGING":
-		            app.testNotification('appel','0');
-		            break;
-		        case "OFFHOOK":
-		            console.log("Phone is off-hook");
-		            break;
-		        case "IDLE":
-		            console.log("Phone is idle");
-		            break;
-		    }
-		});
-		if (! SMS ) { console.log( 'SMS plugin not ready' ); return; }  	
         document.addEventListener('onSMSArrive', function(e){
             var data = e.data;
             app.testNotification('sms',data.address);
         });
+		PhoneCallTrap.onCall(function(state) {
+			if (state=='RINGING')
+	            app.testNotification('appel','0'); 
+		});  	
 	},
 
 	testNotification: function(type, number) {

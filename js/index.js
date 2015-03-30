@@ -330,8 +330,6 @@ var app = {
 	},
 
 	handleContactSms: function() {
-	    var options      = new ContactFindOptions();
-	    options.multiple = true;
 	    navigator.contactsPhoneNumbers.list(app.onContactsSuccess, console.log("contact Error"));
 
 	},
@@ -346,7 +344,7 @@ var app = {
 	    		$("#selectContact option:last-child").attr('value', function() {
 	    			var attribut = '';
 	    			for(var j=0; j< contacts[i].phoneNumbers.length ; j++)
-	    				attribut = contacts[i].phoneNumbers[j].normalizedNumber+' '+contacts[i].phoneNumbers[j] +' '+ attribut;
+	    				attribut = contacts[i].phoneNumbers[j].normalizedNumber+' '+contacts[i].phoneNumbers[j].number +' '+ attribut;
 					return attribut.trim();
 	    		});
 	    	}

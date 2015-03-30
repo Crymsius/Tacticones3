@@ -122,6 +122,7 @@ var app = {
 
 	onDeviceReady: function() {
 	    app.refreshDeviceList();
+	    startWatch();
 	    app.handleContactSms();
 	},
 

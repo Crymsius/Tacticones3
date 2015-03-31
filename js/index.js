@@ -122,7 +122,7 @@ var app = {
 
 	onDeviceReady: function() {
 	    app.refreshDeviceList();
-	    startWatch();
+	    SMS.startWatch();
 	    app.handleContactSms();
 	},
 

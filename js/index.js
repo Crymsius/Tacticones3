@@ -29,6 +29,10 @@ Vaut 1 à la création.
 */
 
 
+/*...................................................*/
+/*................Variables globales.................*/
+/*...................................................*/
+
 var nbrNotif = 1; //compte le nbr de notifs
 var NouvelleNotif = [];
 function Notification () {
@@ -47,8 +51,14 @@ function MsTact () {
 	this.messageTactile = [];
 };
 
+/*...................................................*/
+/*...................Fonction app....................*/
+/*...................................................*/
 
 var app = {
+
+/*..................Initialisation...................*/
+
 	initialize: function() {	//Fonction d'initialisation
 	    this.bindEvents();
 	    this.startApp();
@@ -126,6 +136,8 @@ var app = {
 	    app.handleContactSms();
 	},
 
+/*................Connexion Bluetooth...................*/
+
 	refreshDeviceList: function() {
 	    $("#deviceList").html(''); // vide la liste
 	    rfduino.discover(5, app.onDiscoverDevice, app.onError);
@@ -171,6 +183,8 @@ var app = {
 	    $("#connexion").hide();
 	    $("#connecte").show();
 	},
+
+/*..............Gestion Notifications................*/
 
 	createNotif: function() {
 		addNotif = 1; //1 pour créer une nouvelle notif
@@ -276,59 +290,36 @@ var app = {
 
  	supprNotif: function(event) {
 			listitem = listitem,
-        	// These are the classnames used for the CSS transition
             dir = event.type === "swipeleft" ? "left" : "right",
-            // Check if the browser supports the transform (3D) CSS transition
-            transition = $.support.cssTransform3d ? dir : false;
-            confirmAndDelete( listitem, transition ); 
+            confirmAndDelete(listitem); 
 
-	    function confirmAndDelete(listitem, transition) {
-	        // Highlight the list item that will be removed
+	    function confirmAndDelete(listitem) {
 	        listitem.children(".ui-btn").addClass("ui-btn-active");
-	        // Inject topic in confirmation popup after removing any previous injected topics
-	        $("#confirm .topic").remove();
-	        listitem.find( ".topic" ).clone().insertAfter( "#question" );
-	        // Show the confirmation popup
+	        $("#confirm .topic").remove(); // Supprime le précédent topic s'il existe
+	        listitem.find(".topic").clone().insertAfter("#question"); // Ajoute le topic de la notif actuelle
 	        $("#confirm").popup("open");
-	        // Proceed when the user confirms
-	        $("#confirm #yes").on("click", function() {
-	        
-	        var id = listitem.attr("id"); //on récupère l'id de la notif
-	        var num = id.substring(id.indexOf('-')+1); //on récupère le numéro de la notif
-	        $("#notifNum-"+num).remove(); // supprime la notif dans l'écran avancé
-        
-        
-            // Remove with a transition
-            if (transition) {
+	        $("#confirm #yes").bind("tap", function() {
+		        var id = listitem.attr("id"); //on récupère l'id de la notif
+		        var num = id.substring(id.indexOf('-')+1); //on récupère le numéro de la notif
+		        $("#notifNum-"+num).remove(); // supprime la notif dans l'écran avancé
                 listitem
-                    // Add the class for the transition direction
-                    .addClass( transition )
-                    // When the transition is done...
+                    .addClass(dir)
                     .on( "webkitTransitionEnd transitionend otransitionend", function() {
-                        // ...the list item will be removed
                         listitem.remove();
-                        // ...the list will be refreshed and the temporary class for border styling removed
-                        $("#listeNotifModifier").listview( "refresh" ).find(".border-bottom").removeClass("border-bottom");
+                        $("#listeNotifModifier").listview("refresh").find(".border-bottom").removeClass("border-bottom");
                     })
-                    // During the transition the previous button gets bottom border
                     .prev("li").children("a").addClass("border-bottom")
-                    // Remove the highlight
                     .end().end().children(".ui-btn").removeClass("ui-btn-active");
-            }
-            // If it's not a touch device or the CSS transition isn't supported just remove the list item and refresh the list
-            else {
-                listitem.remove();
-                $( "#listeNotifModifier" ).listview( "refresh" );
-            }
+            });
             $("#listeNotif").listview("refresh");   
-	        });
-	        // Remove active state and unbind when the cancel button is clicked
-	        $( "#confirm #cancel" ).on( "touch", function() {
-	            listitem.removeClass( "ui-btn-active" );
-	            $( "#confirm #yes" ).off();
+	        $("#confirm #cancel").bind('tap', function() {
+	            listitem.children(".ui-btn").removeClass("ui-btn-active");
+	            $("#confirm #yes").unbind(); // on unbind
 	        });
 	    }
 	},
+
+/*..............Gestion Contacts.................*/
 
 	handleContactSms: function() {
 	    navigator.contactsPhoneNumbers.list(app.onContactsSuccess, console.log("contact Error"));
@@ -351,6 +342,8 @@ var app = {
 	    	}
 	    }
 	},
+
+/*..............Création Message Tactile................*/
 
 	messageTactile: function(){
 		app.progressBar();
@@ -423,6 +416,8 @@ var app = {
 			$("#selectMessageTactile").append(messLi);
 		};
 	},
+
+/*..............Envoi Messages tactiles................*/
 
 	sendData: function(array) { 
 		for (var i=0; i <2; i++) {

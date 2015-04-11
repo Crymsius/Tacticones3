@@ -145,16 +145,18 @@ var app = {
 
 	onDiscoverDevice: function(device) {
 	    var listItem = document.createElement('li'),
-	        html = '<div class="ui-field-contain">' + '<b>' + device.name + '</b><br/>' +
+	        html = '<b>' + device.name + '</b><br/>' +
 	            'RSSI: ' + device.rssi + '&nbsp;|&nbsp;' +
 	            'Advertising: ' + device.advertising + '<br/>' +
-	            device.uuid + '</div>';
+	            device.uuid;
 
 	    listItem.setAttribute('uuid', device.uuid);
 	    listItem.innerHTML = html;
 	    $("#deviceList").append(listItem).enhanceWhithin();
 	    $("#deviceList").listview("refresh");
 	},
+
+
 
 	connect: function(e) {
 	    var uuid = e.target.getAttribute('uuid'),
@@ -179,7 +181,7 @@ var app = {
 		rfduino.isConnected(
 			function() {
 				console.log("Connexion Ok");
-				setTimeout(app.stayConected, 45000);
+				setTimeout(app.stayConnected, 45000);
 			}, 
 			function() {
 				alert("Connexion Rfduino Perdue")

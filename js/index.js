@@ -449,7 +449,7 @@ var app = {
 	testGlobal: function() {
 		app.testSMS();
 		app.testAppels();
-	}
+	},
 
 	testSMS: function() {
 		document.addEventListener('onSMSArrive', function(e){

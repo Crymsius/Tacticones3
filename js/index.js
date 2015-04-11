@@ -71,7 +71,6 @@ var app = {
 
 	bindEvents: function() {	//bind tous les events/clics/swipe/bouttons/etc.
 	    document.addEventListener('deviceready', this.onDeviceReady, false);
-	    document.addEventListener('pause', this.onPause, false);
 	    $("#refreshButton").bind('tap', this.refreshDeviceList);
 	    $("#closeButton").bind('tap', this.disconnect);
 	    $("#deviceList").bind('tap', this.connect);
@@ -162,6 +161,8 @@ var app = {
 	        onConnect = function() {
 	            rfduino.onData(app.onData, app.onError);
 	            app.showConnecte();
+	            app.testGlobal();
+	            app.stayConnected();
 	        };
 	    rfduino.connect(uuid, onConnect, app.onError);
 	},
@@ -172,6 +173,18 @@ var app = {
 
 	onError: function(reason) {
 	    alert(reason);
+	},
+
+	stayConnected: function() {
+		rfduino.isConnected(
+			function() {
+				console.log("Connexion Ok");
+				setTimeout(app.stayConected, 45000);
+			}, 
+			function() {
+				alert("Connexion Rfduino Perdue")
+			}
+		);
 	},
 	
 	showConnexion: function() {
@@ -348,7 +361,7 @@ var app = {
 	messageTactile: function(){
 		app.progressBar();
 
-		varTimeout = setTimeout(app.messageTactileEnd, dureeMsg);
+		setTimeout(app.messageTactileEnd, dureeMsg);
 		var start = +new Date();
 		msgeTact1 = [];
 		msgeTact2 = [];
@@ -433,15 +446,23 @@ var app = {
 		};
 	},
 
-	onPause: function() {
-        document.addEventListener('onSMSArrive', function(e){
+	testGlobal: function() {
+		app.testSMS();
+		app.testAppels();
+	}
+
+	testSMS: function() {
+		document.addEventListener('onSMSArrive', function(e){
             var data = e.data;
             app.testNotification('sms',data.address);
         });
+	},
+
+	testAppels: function() {
 		PhoneCallTrap.onCall(function(state) {
 			if (state=='RINGING')
 	            app.testNotification('appel','0'); 
-		});  	
+		});
 	},
 
 	testNotification: function(type, number) {
